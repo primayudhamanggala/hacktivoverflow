@@ -1,7 +1,10 @@
 const dbUser = require('../models/user')
+const passwordHash = require('password-hash');
 
 module.exports = {
   create: (req, res) => {
+    console.log(req.body);
+    req.body.password = passwordHash.generate(req.body.password)
     dbUser.create(req.body, (err, user) => {
       if(err) {
         res.send(err.message)
@@ -10,8 +13,13 @@ module.exports = {
       }
     })
   },
+  login: (req, res) => {
+    res.send(req.user)
+  },
   getAll: (req, res) => {
-    dbUser.find().populate('question').exec((err, user) => {
+    dbUser.find()
+    // .populate('question').populate('answer').populate('vote')
+    .exec((err, user) => {
       if(err) {
         res.send(err.message)
       } else {

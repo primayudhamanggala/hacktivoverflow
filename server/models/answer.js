@@ -11,7 +11,10 @@ let answerSchema = new Schema({
     ref: 'Question'
   },
   response: String,
-  votes: Number
+  vote: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Vote'
+  }]
 })
 
 

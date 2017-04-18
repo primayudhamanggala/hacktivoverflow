@@ -11,8 +11,7 @@ let questionSchema = new Schema({
     ref: 'Answer'
   }],
   title: String,
-  inquiry: String,
-  votes: Number
+  inquiry: String
 })
 
 

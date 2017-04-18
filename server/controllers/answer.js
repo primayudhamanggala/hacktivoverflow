@@ -1,6 +1,7 @@
 const dbAnswer = require('../models/answer')
 const dbQuestion = require('../models/question')
 const dbUser = require('../models/user')
+const dbVote = require('../models/vote')
 
 module.exports = {
   create: (req, res) => {
@@ -18,8 +19,8 @@ module.exports = {
             console.log(question);
           }
         })
-        dbUser.findByIdAndUpdate(req.params.userId,
-        {$push: {answer: answer}},{safe: true, upsert:true},(err, user) => {
+        dbUser.findByIdAndUpdate(req.params.userId,{
+        $push: {answer: answer}},{safe: true, upsert:true},(err, user) => {
           if (err) {
             console.log(err);
           }else {
@@ -31,7 +32,8 @@ module.exports = {
     })
   },
   getAll: (req, res) => {
-    dbAnswer.find().populate('user').populate('question').exec((err, answer) => {
+    dbAnswer.find({question: req.params.questionId}).populate('vote')
+    .exec((err, answer) => {
       if(err) {
         res.send(err.message)
       } else {
@@ -63,6 +65,59 @@ module.exports = {
         res.send(err.message)
       } else {
         res.send(answer)
+      }
+    })
+  },
+  upVote: (req, res) => {
+    // dbVote.create({user: req.params.userId, value: 1}, (err, vote) => {
+    dbVote.create({user: req.params.userId, value: 1}, (err, vote) => {
+      if (err) {
+        res.send(err)
+      } else {
+        dbAnswer.findByIdAndUpdate(req.params.id,
+          {$push: {vote: vote}}, {safe: true, upsert:true},
+          (err, result) => {
+          if (err) {
+            res.send(err.message)
+          } else {
+            // res.send(result)
+            res.send(vote)
+          }
+        })
+      }
+    })
+  },
+  downVote: (req, res) => {
+    // dbVote.create({user: req.params.userId, value: -1}, (err, vote) => {
+    dbVote.create({user: req.params.userId, value: -1}, (err, vote) => {
+      if (err) {
+        res.send(err)
+      } else {
+        dbAnswer.findByIdAndUpdate(req.params.id,
+          {$push: {vote: vote}}, {safe: true, upsert:true},
+          (err, result) => {
+          if (err) {
+            res.send(err.message)
+          } else {
+            res.send({result, vote})
+          }
+        })
+        // res.send(vote)
+      }
+    })
+  },
+  voteCount: (req, res) => {
+    dbVote.find({answer: req.body.answer} , (err, vote) => {
+      if (err) {
+        res.send(err)
+      } else {
+        let result = vote.map((val) => {
+          {return val.value}
+        })
+        let sum = result.reduce((a, b) => {
+          return a + b
+        }, 0)
+        res.send({sum})
       }
     })
   }

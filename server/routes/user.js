@@ -1,8 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/user')
+const passport = require('../helpers/passport')
 
-router.post('/', userController.create)
+router.post('/signUp', userController.create)
+
+router.post('/signIn', passport, userController.login)
 
 router.get('/', userController.getAll)
 

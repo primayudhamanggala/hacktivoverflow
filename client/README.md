@@ -1,6 +1,6 @@
 # hacktivoverflow
 
-> Stackoverflow copycat
+> A Vue.js project
 
 ## Build Setup
 

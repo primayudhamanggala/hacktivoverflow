@@ -1,13 +1,21 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <HeadNav></HeadNav>
     <router-view></router-view>
+    <PageFooter></PageFooter>
   </div>
 </template>
 
 <script>
+import HeadNav from './components/HeadNav'
+import PageFooter from './components/PageFooter'
+
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    HeadNav,
+    PageFooter
+  }
 }
 </script>
 

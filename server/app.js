@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors')
 
 var dbURI = 'mongodb://localhost/hacktivoverflow'
+// var dbURI = 'mongodb://admin:admin123@ds161960.mlab.com:61960/hacktivoverflow'
 
 const mongoose = require('mongoose')
 mongoose.connect(dbURI)

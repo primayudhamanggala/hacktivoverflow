@@ -21,7 +21,8 @@ module.exports = {
     })
   },
   getAll: (req, res) => {
-    dbQuestion.find().populate('user').exec((err, question) => {
+    dbQuestion.find().populate('answer')
+    .exec((err, question) => {
       if(err) {
         res.send(err.message)
       } else {
@@ -53,6 +54,42 @@ module.exports = {
         res.send(err.message)
       } else {
         res.send(question)
+      }
+    })
+  },
+  upVote: (req, res) => {
+    dbVote.create({user: req.params.userId, value: 1}, (err, vote) => {
+      if (err) {
+        res.send(err)
+      } else {
+        dbAnswer.findByIdAndUpdate(req.params.id,
+          {$push: {vote: vote}}, {safe: true, upsert:true},
+          (err, result) => {
+          if (err) {
+            res.send(err.message)
+          } else {
+            res.send(result)
+          }
+        })
+        // res.send(vote)
+      }
+    })
+  },
+  downVote: (req, res) => {
+    dbVote.create({user: req.params.userId, value: -1}, (err, vote) => {
+      if (err) {
+        res.send(err)
+      } else {
+        dbAnswer.findByIdAndUpdate(req.params.id,
+          {$push: {vote: vote}}, {safe: true, upsert:true},
+          (err, result) => {
+          if (err) {
+            res.send(err.message)
+          } else {
+            res.send(result)
+          }
+        })
+        // res.send(vote)
       }
     })
   }
